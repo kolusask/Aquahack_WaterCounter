@@ -126,7 +126,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void changeBalance(String by) {
-        changeBalance(Double.valueOf(by).doubleValue());
+        try {
+            changeBalance(Double.valueOf(by).doubleValue());
+        } catch (Exception e) {
+            changeBalance(0);
+        }
     }
 
     void saveText() {
@@ -139,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     void loadText() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        String savedText = preferences.getString("BALANCE", "10538");
+        String savedText = preferences.getString("BALANCE", "0");
         if(!savedText.isEmpty())
             changeBalance(savedText);
     }
