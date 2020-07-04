@@ -1,6 +1,10 @@
 package com.example.watercounter;
 
 import android.graphics.Color;
+import android.icu.text.SimpleDateFormat;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -13,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -94,29 +99,31 @@ public class ChartDataProvider {
         return dayName[d];
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static ArrayList getXAxisValues(int nColumns) {
         ArrayList xAxis = new ArrayList();
-
-        for (int i = 0; i < nColumns; i++)
-            xAxis.add(Integer.valueOf(i).toString());
+        switch(nColumns) {
+            case 7:
+                Date date = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                cal.add(Calendar.DATE, -7);
+                SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+                for (int i = 0; i < 7; i++) {
+                    xAxis.add(sdf.format(cal.getTime()));
+                    cal.add(Calendar.DATE, 1);
+                }
+                break;
+            case 12:
+                int m = Calendar.getInstance().get(Calendar.MONTH);
+                xAxis.add(monthName(m));
+                for (int i = (m + 1) % 12; i != m; i = (i + 1) % 12)
+                    xAxis.add(monthName(i));
+                break;
+            default:
+                for (int i = 0; i < nColumns; i++)
+                    xAxis.add("Week " + Integer.valueOf(i + 1).toString());
+        }
         return xAxis;
-//        switch(nColumns) {
-//            case 7:
-//                int d = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-//                for (int i = (d + 1) % 7; i + 1 != d; i = (i + 1) % 7)
-//                    xAxis.add(monthName(i));
-//                xAxis.add(monthName(d));
-//                break;
-//            case 12:
-//                int m = Calendar.getInstance().get(Calendar.MONTH);
-//                xAxis.add(monthName(m));
-//                for (int i = (m + 1) % 12; i + 1 != m; i = (i + 1) % 12)
-//                    xAxis.add(monthName(i));
-//                break;
-//            default:
-//                for (int i = 0; i < nColumns; i++)
-//                    xAxis.add("Week " + Integer.valueOf(i + 1).toString());
-//        }
-//        return xAxis;
     }
 }
