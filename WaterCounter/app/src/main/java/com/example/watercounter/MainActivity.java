@@ -6,11 +6,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     double balance;
     BarChart chart;
+    ChartDataProvider.TimePeriod timePeriod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +36,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         chart = (BarChart) findViewById(R.id.chart);
 
-        BarData data = new BarData(getXAxisValues(), getDataSet());
-        chart.setData(data);
-        chart.animateXY(2000, 2000);
-        chart.invalidate();
+        View.OnClickListener ocl = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.rbLastYear: updateChart(ChartDataProvider.TimePeriod.YEAR);
+                    break;
+                    case R.id.rbLastMonth: updateChart(ChartDataProvider.TimePeriod.MONTH);
+                    break;
+                    case R.id.rbLastWeek: updateChart(ChartDataProvider.TimePeriod.WEEK);
+                    break;
+                }
+            }
+        };
 
-        chart.setDescription("Hourly water consumption for last 24 hours");
+        RadioButton rb = (RadioButton) findViewById(R.id.rbLastYear);
+        rb.setOnClickListener(ocl);
+
+        rb = (RadioButton) findViewById(R.id.rbLastMonth);
+        rb.setOnClickListener(ocl);
+
+        rb = (RadioButton) findViewById(R.id.rbLastWeek);
+        rb.setOnClickListener(ocl);
 
         loadText();
 
@@ -47,6 +67,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnCharge.setOnClickListener(this);
         btnClear.setOnClickListener(this);
 
+    }
+
+    private class ATask extends AsyncTask<BarChart, String, ArrayList> {
+        BarChart chart;
+
+        @Override
+        protected ArrayList doInBackground(BarChart... barCharts) {
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
+            chart = barCharts[0];
+            return ChartDataProvider.getDataSet(timePeriod);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList valueSet) {
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
+            super.onPostExecute(valueSet);
+            BarDataSet barDataSet = new BarDataSet(valueSet, "");
+            barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+
+            ArrayList dataSets = new ArrayList();
+            dataSets.add(barDataSet);
+            chart.setData(new BarData(ChartDataProvider.getXAxisValues(valueSet.size()), dataSets));
+
+        }
+    }
+
+    protected void updateChart(ChartDataProvider.TimePeriod tp) {
+        timePeriod = tp;
+        //BarData data = new BarData(ChartDataProvider.getXAxisValues(), ChartDataProvider.getDataSet(tp));
+
+        new ATask().execute(chart);
+        //chart.setData(data);
+        chart.animateXY(2000, 2000);
+        chart.invalidate();
+
+        switch (tp) {
+            case YEAR:
+                chart.setDescription("Monthly water consumption for last year");
+                break;
+            case MONTH:
+                chart.setDescription("Weekly water consumption for last year");
+                break;
+            case WEEK:
+                chart.setDescription("Daily water consumption for last year");
+                break;
+        }
     }
 
     @Override
@@ -80,58 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             changeBalance(savedText);
     }
 
-    private ArrayList getDataSet() {
-        ArrayList dataSets = null;
 
-        ArrayList valueSet1 = new ArrayList();
-        BarEntry v1e1 = new BarEntry(110.000f, 0); // Jan
-        valueSet1.add(v1e1);
-        BarEntry v1e2 = new BarEntry(40.000f, 1); // Feb
-        valueSet1.add(v1e2);
-        BarEntry v1e3 = new BarEntry(60.000f, 2); // Mar
-        valueSet1.add(v1e3);
-        BarEntry v1e4 = new BarEntry(30.000f, 3); // Apr
-        valueSet1.add(v1e4);
-        BarEntry v1e5 = new BarEntry(90.000f, 4); // May
-        valueSet1.add(v1e5);
-        BarEntry v1e6 = new BarEntry(100.000f, 5); // Jun
-        valueSet1.add(v1e6);
-
-        ArrayList valueSet2 = new ArrayList();
-        BarEntry v2e1 = new BarEntry(150.000f, 0); // Jan
-        valueSet2.add(v2e1);
-        BarEntry v2e2 = new BarEntry(90.000f, 1); // Feb
-        valueSet2.add(v2e2);
-        BarEntry v2e3 = new BarEntry(120.000f, 2); // Mar
-        valueSet2.add(v2e3);
-        BarEntry v2e4 = new BarEntry(60.000f, 3); // Apr
-        valueSet2.add(v2e4);
-        BarEntry v2e5 = new BarEntry(20.000f, 4); // May
-        valueSet2.add(v2e5);
-        BarEntry v2e6 = new BarEntry(80.000f, 5); // Jun
-        valueSet2.add(v2e6);
-
-        BarDataSet barDataSet1 = new BarDataSet(valueSet1, "");
-        barDataSet1.setColor(Color.rgb(0, 155, 0));
-        BarDataSet barDataSet2 = new BarDataSet(valueSet2, "");
-        barDataSet2.setColors(ColorTemplate.COLORFUL_COLORS);
-
-        dataSets = new ArrayList();
-        dataSets.add(barDataSet1);
-        dataSets.add(barDataSet2);
-        return dataSets;
-    }
-
-    private ArrayList getXAxisValues() {
-        ArrayList xAxis = new ArrayList();
-        xAxis.add("JAN");
-        xAxis.add("FEB");
-        xAxis.add("MAR");
-        xAxis.add("APR");
-        xAxis.add("MAY");
-        xAxis.add("JUN");
-        return xAxis;
-    }
 
     @Override
     public void onClick(View view) {
