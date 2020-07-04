@@ -102,13 +102,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (tp) {
             case YEAR:
-                chart.setDescription("Monthly water consumption for last year");
+                chart.setDescription("Monthly water consumption for last year [m^3]");
                 break;
             case MONTH:
-                chart.setDescription("Weekly water consumption for last year");
+                chart.setDescription("Weekly water consumption for last year [m^3]");
                 break;
             case WEEK:
-                chart.setDescription("Daily water consumption for last year");
+                chart.setDescription("Daily water consumption for last year [m^3]");
                 break;
         }
     }
