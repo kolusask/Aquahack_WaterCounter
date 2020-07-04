@@ -76,16 +76,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected ArrayList doInBackground(BarChart... barCharts) {
-            if(android.os.Debug.isDebuggerConnected())
-                android.os.Debug.waitForDebugger();
             chart = barCharts[0];
             return ChartDataProvider.getDataSet(timePeriod);
         }
 
         @Override
         protected void onPostExecute(ArrayList valueSet) {
-            if(android.os.Debug.isDebuggerConnected())
-                android.os.Debug.waitForDebugger();
             super.onPostExecute(valueSet);
             BarDataSet barDataSet = new BarDataSet(valueSet, "");
             barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
@@ -99,10 +95,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     protected void updateChart(ChartDataProvider.TimePeriod tp) {
         timePeriod = tp;
-        //BarData data = new BarData(ChartDataProvider.getXAxisValues(), ChartDataProvider.getDataSet(tp));
 
         new ATask().execute(chart);
-        //chart.setData(data);
         chart.animateXY(2000, 2000);
         chart.invalidate();
 
