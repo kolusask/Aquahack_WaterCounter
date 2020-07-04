@@ -28,7 +28,7 @@
             android:layout_height="32dp"
             android:layout_weight="1"
             android:gravity="center|center_vertical"
-            android:text="Show consumption:"
+            android:text="Show consumption for the last:"
             android:textSize="14sp" />
 
         <RadioGroup
@@ -37,24 +37,24 @@
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/rbWeekly"
+                android:id="@+id/rbLastYear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Weekly" />
+                android:text="Year" />
 
             <RadioButton
-                android:id="@+id/rbDaily"
+                android:id="@+id/rbLastMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="Daily" />
+                android:text="Month" />
 
             <RadioButton
-                android:id="@+id/rbHourly"
+                android:id="@+id/rbLastWeek"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Hourly" />
+                android:text="Week" />
 
             <Space
                 android:layout_width="14dp"
