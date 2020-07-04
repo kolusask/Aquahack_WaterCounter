@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rb = (RadioButton) findViewById(R.id.rbLastWeek);
         rb.setOnClickListener(ocl);
 
+        rb.callOnClick();
+
         loadText();
 
         Button btnCharge = findViewById(R.id.btnCharge);
