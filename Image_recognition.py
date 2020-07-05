@@ -1,5 +1,4 @@
 import requests
-import string
 import os
 from datetime import date,datetime
 
@@ -29,7 +28,7 @@ def ocr_space_file(filename, api_key='07cf5a4f8488957'):
         fin_l=mesi.replace("o","0")
         formatted_list.append(fin_l)
 
-    # adding only digits to the list
+    # adding only digits which starts with 0 to the list
     for i in range (len(formatted_list)-1):
         if (formatted_list[i][0]=='0') :
             letter_remove.append(formatted_list[i])
@@ -79,16 +78,10 @@ def ocr_space_file(filename, api_key='07cf5a4f8488957'):
 
 
 
-#######     Function for Raspberry Pi to take a photo
 
-##### for taking photo instantly with Raspberry Pi we uncomment line 87-88 and change filename
-##### accordingly while calling function
-
-#while True:
-    #os.system('fswebcam -r 640x480 -S 3 --jpeg 50 --save /home/pi/Samples/counter_meter.jpg')
-
-##### for checking photo only from local storage
-
-ocr_space_file(filename='test_photo.jpg')
+while True:
+    #######     Function for Raspberry Pi to take a photo
+    os.system('fswebcam -r 640x480 -S 3 --jpeg 50 --save /home/pi/Samples/test_photo.jpg')
+    ocr_space_file(filename='test_photo.jpg')
 
 
