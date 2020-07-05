@@ -105,10 +105,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 chart.setDescription("Monthly water consumption for last year [m^3]");
                 break;
             case MONTH:
-                chart.setDescription("Weekly water consumption for last year [m^3]");
+                chart.setDescription("Weekly water consumption for last month [m^3]");
                 break;
             case WEEK:
-                chart.setDescription("Daily water consumption for last year [m^3]");
+                chart.setDescription("Daily water consumption for last week [m^3]");
                 break;
         }
     }
