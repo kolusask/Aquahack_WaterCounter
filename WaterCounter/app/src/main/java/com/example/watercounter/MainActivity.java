@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void changeBalance(double by) {
         balance += by;
         TextView twBalance = (TextView)findViewById(R.id.textViewBalance);
-        twBalance.setText(Double.valueOf(balance).toString());
+        twBalance.setText(Double.valueOf(balance).toString() + " AZN");
         saveText();
     }
 
