@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected void onPostExecute(ArrayList valueSet) {
             super.onPostExecute(valueSet);
             BarDataSet barDataSet = new BarDataSet(valueSet, "");
-            barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+            barDataSet.setColors(ColorTemplate.LIBERTY_COLORS);
 
             ArrayList dataSets = new ArrayList();
             dataSets.add(barDataSet);
