@@ -53,7 +53,7 @@ public class ChartDataProvider {
     }
 
     private static ArrayList collectData(String method) {
-        String data = callMethod(method);
+        String data = callMethod(method).replace("None", "0");
 
         ArrayList valueSet = new ArrayList();
 
